@@ -21,6 +21,7 @@ limiter = Limiter(key_func=get_remote_address, app=app, default_limits=["5000 pe
 def secure_redirect():
     target = request.args.get('to')
     
+    # Error: Missing 'to' parameter
     if not target:
         return render_template('error.html', error_code="400", error_title="Bad Request", error_message="Error: Missing 'to' link"), 400
     
@@ -32,11 +33,14 @@ def secure_redirect():
 
     response = make_response(render_template('redirect.html', encoded_target=encoded_target, nonce=nonce))
     
+    # Security Headers
     response.headers['Referrer-Policy'] = 'no-referrer'
     response.headers['X-Content-Type-Options'] = 'nosniff'
     response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
     response.headers['X-Frame-Options'] = 'DENY'
-    response.headers['Content-Security-Policy'] = f"default-src 'self'; script-src 'nonce-{nonce}'"
+    
+    # UPDATED CSP: Added "style-src 'nonce-{nonce}'" to allow the background colors
+    response.headers['Content-Security-Policy'] = f"default-src 'self'; script-src 'nonce-{nonce}'; style-src 'nonce-{nonce}'"
 
     return response
 
