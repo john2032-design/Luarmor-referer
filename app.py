@@ -2,7 +2,6 @@ import os
 import base64
 import secrets
 import logging
-import random
 from flask import Flask, request, make_response, render_template
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
@@ -23,7 +22,7 @@ def secure_redirect():
     target = request.args.get('to')
     
     if not target:
-        return render_template('error.html'), 400
+        return render_template('error.html', error_code="400", error_title="Bad Request", error_message="Error: Missing 'to' link"), 400
     
     if not target.startswith(('http://', 'https://')):
         target = 'https://' + target
@@ -43,7 +42,7 @@ def secure_redirect():
 
 @app.errorhandler(404)
 def page_not_found(e):
-    return render_template('error.html'), 404
+    return render_template('error.html', error_code="404", error_title="Not Found", error_message="The requested page does not exist"), 404
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
