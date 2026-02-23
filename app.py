@@ -47,8 +47,12 @@ def spoof_headers(response):
 def secure_redirect():
     target = request.args.get('verify')
     
+    # UPDATED: Specific error message for missing URL
     if not target:
-        return render_template('error.html', error_code="502", error_title="Bad Gateway", error_message="Upstream service unavailable."), 502
+        return render_template('error.html', 
+                             error_code="400", 
+                             error_title="Bad Request", 
+                             error_message="Error: Missing 'url' parameter"), 400
     
     if not target.startswith(('http://', 'https://')):
         target = 'https://' + target
