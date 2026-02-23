@@ -42,6 +42,10 @@ def spoof_headers(response):
     response.headers["X-Powered-By"] = "PHP/8.1.2"
     return response
 
+@app.route('/healthz')
+def health_check():
+    return "OK", 200
+
 @app.route('/redirect')
 @limiter.limit("120 per minute")
 def secure_redirect():
