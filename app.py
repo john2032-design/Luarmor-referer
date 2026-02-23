@@ -47,7 +47,6 @@ def spoof_headers(response):
 def secure_redirect():
     target = request.args.get('verify')
     
-    # UPDATED: Specific error message for missing URL
     if not target:
         return render_template('error.html', 
                              error_code="400", 
