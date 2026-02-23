@@ -3,23 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 Not Found</title>
+    <title>Link Expired</title>
     <style>
         body {
-            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-            padding: 50px;
-            text-align: center;
-            background-color: #f8f9fa;
-            color: #333;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background-color: #fff5f5;
+            color: #c53030;
         }
-        h1 { font-size: 50px; margin-bottom: 10px; }
-        p { font-size: 18px; color: #666; }
-        .divider { width: 50px; height: 2px; background: #ccc; margin: 20px auto; }
+        .container {
+            text-align: center;
+            padding: 40px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid #fed7d7;
+        }
+        h1 { font-size: 60px; margin: 0; line-height: 1; }
+        h2 { margin: 10px 0; font-size: 24px; color: #2d3748; }
+        p { color: #718096; margin-top: 5px; }
+        .btn {
+            margin-top: 20px;
+            display: inline-block;
+            padding: 10px 20px;
+            background: #c53030;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
-    <h1>404</h1>
-    <div class="divider"></div>
-    <p>The requested resource could not be found.</p>
+    <div class="container">
+        <h1>404</h1>
+        <h2>Invalid Link</h2>
+        <p>The link you are trying to access is missing or invalid.</p>
+        <a href="#" class="btn">Go Back</a>
+    </div>
 </body>
 </html>
