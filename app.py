@@ -46,7 +46,7 @@ def spoof_headers(response):
 def health_check():
     return "OK", 200
 
-@app.route('/redirect')
+@app.route('/luarmor')
 @limiter.limit("120 per minute")
 def secure_redirect():
     target = request.args.get('verify')
