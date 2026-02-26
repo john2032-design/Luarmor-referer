@@ -36,17 +36,17 @@
             max-width: 400px;
             width: 90%;
         }
-        h2 { 
-            font-size: 24px; 
-            font-weight: 700; 
-            margin-bottom: 15px; 
-            color: #ff4444; 
+        h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #ff4444;
             letter-spacing: -0.5px;
         }
-        p { 
-            font-size: 14px; 
-            color: #888; 
-            margin-bottom: 30px; 
+        p {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 30px;
             line-height: 1.5;
         }
         #{{ ids.button }} {
@@ -64,12 +64,12 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-        #{{ ids.button }}:hover { 
-            background: #cc3333; 
+        #{{ ids.button }}:hover {
+            background: #cc3333;
             transform: translateY(-1px);
         }
-        #{{ ids.button }}:active { 
-            transform: scale(0.98); 
+        #{{ ids.button }}:active {
+            transform: scale(0.98);
         }
     </style>
 </head>
@@ -83,16 +83,22 @@
     </div>
     <script nonce="{{ nonce }}">
         document.addEventListener('DOMContentLoaded', function() {
+            if (navigator.webdriver) {
+                var c = document.getElementById("{{ ids.container }}");
+                c.innerHTML = '<h2 style="color:#ff4444">Access Denied</h2><p style="color:#888">Automated browsers are not permitted.</p>';
+                return;
+            }
+
             var btn = document.getElementById("{{ ids.button }}");
             var clicked = false;
 
-            btn.addEventListener('click', function(e) {
-                if(clicked) return;
+            btn.addEventListener('click', function() {
+                if (clicked) return;
                 clicked = true;
-                
-                btn.innerHTML = 'Verified... Redirecting';
-                btn.style.opacity = "0.7";
-                btn.style.cursor = "default";
+
+                btn.innerHTML = 'Verified\u2026 Redirecting';
+                btn.style.opacity = '0.7';
+                btn.style.cursor = 'default';
 
                 setTimeout(function() {
                     try {
@@ -104,16 +110,25 @@
                         for (var i = 0; i < hex.length; i += 2) {
                             url += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
                         }
-                        
+
                         var link = document.createElement('a');
                         link.href = url;
-                        link.rel = "noreferrer";
+                        link.rel = 'noreferrer noopener';
+                        link.referrerPolicy = 'no-referrer';
                         link.style.position = 'absolute';
                         link.style.left = '-9999px';
                         link.style.top = '0';
                         document.body.appendChild(link);
                         link.click();
-                        
+
+                        setTimeout(function() {
+                            try {
+                                window.location.replace(url);
+                            } catch(e2) {
+                                window.location.href = url;
+                            }
+                        }, 600);
+
                     } catch (e) {
                         window.location.reload();
                     }
